@@ -5,8 +5,7 @@ Designed with **one shared design system, even spacing, smooth micro-interaction
 
 > ⚡ **Portfolio-Level Project** – Showcasing Senior Front-End expertise in **RTL interfaces, dashboard layouts, data visualization and reusable component design**.
 
-<!-- TODO: wrap this badge in the Vercel demo link once the site is live -->
-![](https://img.shields.io/badge/Live_Demo-Visit_Site-8d43f5?style=for-the-badge&logo=vercel&logoColor=white)
+[![](https://img.shields.io/badge/Live_Demo-Visit_Site-8d43f5?style=for-the-badge&logo=vercel&logoColor=white)](https://dashboard-2-puce.vercel.app/)
 
 ---
 
@@ -93,8 +92,7 @@ _Off-canvas drawer, bottom navigation and stacked cards, down to a 390px viewpor
 
 ### 🔗 Live Demo
 
-<!-- TODO: replace this line with the Vercel deployment URL -->
-_Demo link coming soon._
+**https://dashboard-2-puce.vercel.app**
 
 ---
 

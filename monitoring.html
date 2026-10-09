@@ -1,0 +1,1134 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>مانیتورینگ اتاق سرور | سامانه مدیریت تیکت و مانیتورینگ</title>
+    <meta name="description" content="پایش زنده دما، رطوبت، برق و وضعیت تجهیزات اتاق سرور به همراه شاخص‌های هشدار.">
+    <meta name="author" content="con.dev">
+    <meta name="theme-color" content="#0059FF">
+
+    <meta property="og:type" content="website">
+    <meta property="og:locale" content="fa_IR">
+    <meta property="og:title" content="مانیتورینگ اتاق سرور | سامانه مدیریت تیکت و مانیتورینگ">
+    <meta property="og:description" content="پایش زنده دما، رطوبت، برق و وضعیت تجهیزات اتاق سرور به همراه شاخص‌های هشدار.">
+
+    <link rel="shortcut icon" href="assets/images/favicon.ico">
+
+    <script>
+        /* انتخاب طرح پیش از رندر شدن صفحه تا پرش رنگ (flash) نداشته باشیم */
+        (function () {
+            var dark = false;
+            try { dark = localStorage.getItem('db-theme') === 'dark'; } catch (e) {}
+            document.write('<link href="assets/css/' + (dark ? 'bootstrap-dark.min.css' : 'bootstrap.min.css') + '" id="bootstrap-style" rel="stylesheet" type="text/css">');
+            document.write('<link href="assets/css/' + (dark ? 'app-dark.css' : 'app.css') + '" id="app-style" rel="stylesheet" type="text/css">');
+        })();
+    </script>
+
+    <link href="assets/css/icons.css" rel="stylesheet" type="text/css">
+    <link href="assets/css/theme.css" rel="stylesheet" type="text/css">
+    <link href="assets/css/jalalidatepicker.min.css" rel="stylesheet" type="text/css">
+    <link href="assets/css/Range.css" rel="stylesheet" type="text/css">
+</head>
+
+<body data-layout="vertical" data-topbar="light" data-mobile-nav="on" class="page-monitoring">
+
+    <!-- ناوبری پایین صفحه در حالت موبایل -->
+    <nav class="navigation-bottom mobile-display" aria-label="ناوبری موبایل">
+        <a class="nav-btm-item" href="index.html"><i class="mdi mdi-view-dashboard-outline"></i><span>میز کار</span></a>
+        <a class="nav-btm-item" href="tickets.html"><i class="mdi mdi-ticket-outline"></i><span>تیکت ها</span></a>
+        <a class="nav-btm-item" href="monitoring.html"><i class="mdi mdi-server"></i><span>مانیتورینگ</span></a>
+        <a class="nav-btm-item" href="subjects.html"><i class="mdi mdi-tag-outline"></i><span>عناوین</span></a>
+        <a class="nav-btm-item" href="settings.html"><i class="mdi mdi-tune"></i><span>تنظیمات</span></a>
+    </nav>
+    <div class="navigation-plus mobile-display">
+        <a href="ticket-new.html" title="ثبت تیکت جدید" aria-label="ثبت تیکت جدید">
+            <svg viewBox="0 0 24 24"><path fill="currentColor" d="M17,13H13V17H11V13H7V11H11V7H13V11H17M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2Z"/></svg>
+        </a>
+    </div>
+
+    <div class="container-fluid">
+        <!-- Begin page -->
+        <div id="layout-wrapper">
+
+            <!-- ========== Topbar ========== -->
+            <header id="page-topbar">
+                <div class="navbar-header">
+
+                    <div class="topbar-side topbar-side-start">
+                        <div class="navbar-brand-box">
+                            <a href="index.html" class="brand-link">
+                                <span class="brand-mark"><i class="mdi mdi-ticket-outline"></i></span>
+                                <span class="brand-text">
+                                    <strong>سامانه پشتیبانی</strong>
+                                    <small>مدیریت تیکت و مانیتورینگ</small>
+                                </span>
+                            </a>
+                        </div>
+
+                        <button type="button" class="btn header-item noti-icon" id="vertical-menu-btn"
+                            aria-label="باز و بسته کردن منو">
+                            <i class="fa fa-fw fa-bars"></i>
+                        </button>
+
+                        <form class="app-search d-none d-lg-inline-block" role="search" onsubmit="return false;">
+                            <div class="position-relative">
+                                <input type="text" class="form-control" placeholder="جستجو در این صفحه..."
+                                    aria-label="جستجو" autocomplete="off">
+                                <span class="bx bx-search-alt"></span>
+                            </div>
+                        </form>
+                    </div>
+
+                    <div class="topbar-side topbar-side-end">
+                        <h3 class="topbar-page-title d-lg-none">مانیتورینگ اتاق سرور</h3>
+
+                        <button type="button" class="btn header-item noti-icon d-lg-none" data-search-toggle
+                            aria-label="جستجو">
+                            <i class="mdi mdi-magnify"></i>
+                        </button>
+
+
+
+                        <button type="button" class="btn header-item noti-icon d-none d-lg-inline-flex"
+                            data-toggle="fullscreen" aria-label="تمام صفحه">
+                            <i class="mdi mdi-fullscreen"></i>
+                        </button>
+
+                        <button type="button" class="btn header-item noti-icon" id="theme-toggle"
+                            aria-label="تغییر طرح روشن و تیره" title="تغییر طرح روشن و تیره">
+                            <i class="mdi mdi-weather-night"></i>
+                        </button>
+
+                        <div class="dropdown d-inline-block">
+                            <button type="button" class="btn header-item noti-icon waves-effect"
+                                id="page-header-notifications-dropdown" data-toggle="dropdown" aria-haspopup="true"
+                                aria-expanded="false" aria-label="اعلان ها">
+                                <i class="mdi mdi-bell-outline"></i>
+                                <span class="badge badge-danger badge-pill">۳</span>
+                            </button>
+                            <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right p-0"
+                                aria-labelledby="page-header-notifications-dropdown">
+                                <div class="p-3">
+                                    <div class="row align-items-center">
+                                        <div class="col">
+                                            <h6 class="m-0">اعلان ها</h6>
+                                        </div>
+                                        <div class="col-auto">
+                                            <a href="tickets.html" class="small">مشاهده همه</a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div data-simplebar style="max-height: 280px;">
+                                    <a href="tickets.html" class="text-reset notification-item">
+                                        <div class="media">
+                                            <div class="avatar-xs mr-3">
+                                                <span class="avatar-title bg-primary rounded-circle font-size-16">
+                                                    <i class="mdi mdi-ticket-outline"></i>
+                                                </span>
+                                            </div>
+                                            <div class="media-body">
+                                                <h6 class="mt-0 mb-1">تیکت جدید #۳۱۹۹۲ ثبت شد</h6>
+                                                <div class="font-size-12 text-muted">
+                                                    <p class="mb-1">نصب نرم‌افزار حسابداری روی سیستم واحد مالی</p>
+                                                    <p class="mb-0"><i class="mdi mdi-clock-outline"></i> ۴ دقیقه پیش</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </a>
+                                    <a href="referrals.html" class="text-reset notification-item">
+                                        <div class="media">
+                                            <img src="assets/images/users/avatar-6.jpg" class="mr-3 rounded-circle avatar-xs"
+                                                alt="تصویر کاربر">
+                                            <div class="media-body">
+                                                <h6 class="mt-0 mb-1">تیکت #۳۱۹۵۸ به شما ارجاع شد</h6>
+                                                <div class="font-size-12 text-muted">
+                                                    <p class="mb-1">سارا احمدی درخواست بررسی قطعی شبکه را ارجاع داد</p>
+                                                    <p class="mb-0"><i class="mdi mdi-clock-outline"></i> ۳۲ دقیقه پیش</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </a>
+                                    <a href="monitoring.html" class="text-reset notification-item">
+                                        <div class="media">
+                                            <div class="avatar-xs mr-3">
+                                                <span class="avatar-title bg-danger rounded-circle font-size-16">
+                                                    <i class="mdi mdi-alert-outline"></i>
+                                                </span>
+                                            </div>
+                                            <div class="media-body">
+                                                <h6 class="mt-0 mb-1">هشدار دمای رک ۳</h6>
+                                                <div class="font-size-12 text-muted">
+                                                    <p class="mb-1">دمای رک از آستانه تعیین‌شده عبور کرد (۳۱.۴ درجه)</p>
+                                                    <p class="mb-0"><i class="mdi mdi-clock-outline"></i> ۱ ساعت پیش</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </a>
+                                    <a href="tickets.html" class="text-reset notification-item">
+                                        <div class="media">
+                                            <img src="assets/images/users/avatar-4.jpg" class="mr-3 rounded-circle avatar-xs"
+                                                alt="تصویر کاربر">
+                                            <div class="media-body">
+                                                <h6 class="mt-0 mb-1">تیکت #۳۱۸۷۰ بسته شد</h6>
+                                                <div class="font-size-12 text-muted">
+                                                    <p class="mb-1">رضا کریمی مشکل پیکربندی صندوق پست الکترونیک را بست</p>
+                                                    <p class="mb-0"><i class="mdi mdi-clock-outline"></i> ۲ ساعت پیش</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </a>
+                                </div>
+                                <div class="p-2 border-top">
+                                    <a class="btn btn-sm btn-link font-size-14 btn-block text-center"
+                                        href="tickets.html">
+                                        <i class="mdi mdi-arrow-right-circle mr-1"></i> مشاهده همه اعلان ها
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="dropdown d-inline-block">
+                            <button type="button" class="btn header-item waves-effect user-chip"
+                                id="page-header-user-dropdown" data-toggle="dropdown" aria-haspopup="true"
+                                aria-expanded="false">
+                                <img class="rounded-circle header-profile-user" src="assets/images/users/avatar-2.jpg"
+                                    alt="تصویر کاربر">
+                                <span class="user-chip-meta">
+                                    <span class="user-name">محسن میرجانیان</span>
+                                    <span class="user-role">مدیر فناوری اطلاعات</span>
+                                </span>
+                                <i class="mdi mdi-chevron-down d-none d-lg-inline-block gray-color"></i>
+                            </button>
+                            <div class="dropdown-menu dropdown-menu-right">
+                                <a class="dropdown-item" href="https://www.instagram.com/con.dev" target="_blank" rel="noopener">
+                                    <i class="bx bx-user font-size-16 align-middle mr-1"></i> پروفایل</a>
+                                <a class="dropdown-item" href="tickets.html">
+                                    <i class="bx bx-message font-size-16 align-middle mr-1"></i> پیام ها</a>
+                                <a class="dropdown-item" href="settings.html">
+                                    <i class="bx bx-wrench font-size-16 align-middle mr-1"></i> تنظیمات</a>
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item" href="https://cv.condev.ir/#/fa" target="_blank" rel="noopener">
+                                    <i class="bx bx-lock-open font-size-16 align-middle mr-1"></i> تغییر رمز عبور</a>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </header>
+
+
+                        <!-- ========== Left Sidebar Start ========== -->
+            <div class="vertical-menu overflow-hidden">
+                <div class="sidebar-scroll" data-simplebar>
+                    <div class="sidebar-cta">
+                        <a href="ticket-new.html" class="btn-submit-ticket">
+                            <svg viewBox="0 0 24 24"><path fill="currentColor" d="M22 10V6C22 4.89 21.1 4 20 4H4C2.9 4 2 4.89 2 6V10C3.11 10 4 10.9 4 12S3.11 14 2 14V18C2 19.1 2.9 20 4 20H20C21.1 20 22 19.1 22 18V14C20.9 14 20 13.1 20 12S20.9 10 22 10M20 8.54C18.81 9.23 18 10.53 18 12S18.81 14.77 20 15.46V18H4V15.46C5.19 14.77 6 13.47 6 12C6 10.5 5.2 9.23 4 8.54L4 6H20V8.54M11 15H13V17H11M11 11H13V13H11M11 7H13V9H11Z"/></svg>
+                            ثبت تیکت جدید
+                        </a>
+                    </div>
+
+                    <div id="sidebar-menu">
+                        <ul class="dash-menu">
+                            <li class="menu-title">مدیریت</li>
+
+                            <li class="nav-item">
+                                <a class="nav-link" href="index.html">
+                                    <i class="mdi mdi-view-dashboard-outline"></i>
+                                    <span class="nav-label">میز کار</span>
+                                </a>
+                            </li>
+
+                            <li class="nav-item has-children">
+                                <button type="button" class="nav-link nav-toggle" aria-expanded="false">
+                                    <i class="mdi mdi-ticket-outline"></i>
+                                    <span class="nav-label">تیکت و ارجاعات</span>
+                                    <span class="nav-badge">۱۰</span>
+                                    <i class="fa fa-angle-down nav-arrow"></i>
+                                </button>
+                                <ul class="nav-sub">
+                                    <li><a href="tickets.html">لیست تیکت ها</a></li>
+                                    <li><a href="ticket-new.html">ثبت تیکت جدید</a></li>
+                                    <li><a href="referrals.html">ارجاع تیکت</a></li>
+                                </ul>
+                            </li>
+
+                            <li class="nav-item">
+                                <a class="nav-link" href="subjects.html">
+                                    <i class="mdi mdi-tag-outline"></i>
+                                    <span class="nav-label">مدیریت عناوین</span>
+                                </a>
+                            </li>
+
+                            <li class="menu-title">مانیتورینگ</li>
+
+                            <li class="nav-item has-children">
+                                <button type="button" class="nav-link nav-toggle" aria-expanded="false">
+                                    <i class="mdi mdi-server"></i>
+                                    <span class="nav-label">اتاق سرور</span>
+                                    <i class="fa fa-angle-down nav-arrow"></i>
+                                </button>
+                                <ul class="nav-sub">
+                                    <li><a href="monitoring.html">داشبورد مانیتورینگ</a></li>
+                                    <li><a href="monitoring-data.html">داده های مانیتورینگ</a></li>
+                                    <li><a href="monitoring-settings.html">تنظیمات مانیتورینگ</a></li>
+                                </ul>
+                            </li>
+
+                            <li class="menu-title">سایر</li>
+
+                            <li class="nav-item">
+                                <a class="nav-link" href="survey.html">
+                                    <i class="mdi mdi-clipboard-text-outline"></i>
+                                    <span class="nav-label">نظرسنجی رضایت</span>
+                                </a>
+                            </li>
+
+                            <li class="nav-item">
+                                <a class="nav-link" href="settings.html">
+                                    <i class="mdi mdi-tune"></i>
+                                    <span class="nav-label">تنظیمات سیستم</span>
+                                </a>
+                            </li>
+                        </ul>
+
+                </div>
+            </div>
+            </div>
+            <!-- Left Sidebar End -->
+
+
+            <!-- ============================================================== -->
+            <!-- Start right Content here -->
+            <!-- ============================================================== -->
+            <div class="main-content">
+
+                <section class="page-content">
+
+
+                <!-- سرصفحه صفحه -->
+                <div class="page-head">
+                    <div>
+                        <h4 class="page-title">مانیتورینگ اتاق سرور</h4>
+                        <p class="page-subtitle">
+                            <i class="mdi mdi-clock-outline mr-1"></i>
+                            آخرین نمونه‌گیری زنده: <span data-live-clock>--:--:--</span>
+                            <span class="text-muted">|</span> بازه مجاز دما: ۱۸ تا ۲۶ درجه
+                        </p>
+                    </div>
+                    <div class="page-head-actions">
+                        <a href="monitoring-data.html" class="btn btn-light btn-sm">
+                            <i class="mdi mdi-table mr-1"></i> داده های مانیتورینگ
+                        </a>
+                        <a href="monitoring-settings.html" class="btn btn-primary btn-sm">
+                            <i class="mdi mdi-tune mr-1"></i> تنظیمات مانیتورینگ
+                        </a>
+                    </div>
+                </div>
+
+                <!-- نوار انتخاب بخش‌های ماژول -->
+                <section class="w-100 Button_Container" data-views=".MonView">
+                    <div class="w-100 p-4">
+                        <div class="view-switch-tabs d-none d-lg-flex">
+                            <button type="button"
+                                class="btn Pointer selectedButton" data-target="#MonView_Live">اصلی</button>
+                            <button type="button"
+                                class="btn Pointer" data-target="#MonView_Setting">تنظیمات</button>
+                            <button type="button"
+                                class="btn Pointer" data-target="#MonView_Data">داده ها</button>
+                        </div>
+
+                        <select class="form-control form-control-lg d-block d-lg-none"
+                            >
+                            <option value="#MonView_Live" selected>اصلی</option>
+                            <option value="#MonView_Setting">تنظیمات</option>
+                            <option value="#MonView_Data">داده ها</option>
+                        </select>
+                    </div>
+                </section>
+
+                <!-- ============ بخش ۱: پایش زنده ============ -->
+                <section class="MonView" id="MonView_Live">
+
+                    <div class="card">
+                        <div class="card-head">
+                            <h5 class="card-title mb-0">نمای زنده سنسورها</h5>
+                            <span class="badge badge-soft-danger"><span class="status-dot bg-danger"></span>۱ هشدار فعال</span>
+                        </div>
+                        <div class="card-body">
+                            <div class="stat-grid stat-grid-4">
+                                <div class="col-md-3 col-6">
+                                    <div class="stat-item">
+                                        <p class="stat-label"><i class="mdi mdi-circle blue-color"></i> رک‌های فعال</p>
+                                        <h5 class="stat-value">۳ <small>رک</small></h5>
+                                    </div>
+                                </div>
+                                <div class="col-md-3 col-6">
+                                    <div class="stat-item">
+                                        <p class="stat-label"><i class="mdi mdi-circle green-color"></i> سنسور در حالت عادی</p>
+                                        <h5 class="stat-value">۱۷ <small>از ۱۸</small></h5>
+                                    </div>
+                                </div>
+                                <div class="col-md-3 col-6">
+                                    <div class="stat-item">
+                                        <p class="stat-label"><i class="mdi mdi-circle orange-color"></i> هشدار فعال</p>
+                                        <h5 class="stat-value">۱ <small>رک ۳</small></h5>
+                                    </div>
+                                </div>
+                                <div class="col-md-3 col-6">
+                                    <div class="stat-item">
+                                        <p class="stat-label"><i class="mdi mdi-circle yellow-color"></i> میانگین دما</p>
+                                        <h5 class="stat-value">۲۵.۲ <small>درجه</small></h5>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="monitor-grid mt-4">
+                                <div class="monitor-card">
+                                    <div class="monitor-gauge">
+                                        <span class="gauge-ring" style="--gauge-color: var(--db-success); --gauge-pct: 53%;">
+                                            <span class="gauge-inner">
+                                                <i class="mdi mdi-thermometer"></i>
+                                                <span class="gauge-value" data-live-value="21.4" data-live-unit="°C"
+                                            data-live-decimals="1" data-live-spread="0.4" data-live-min="19.5"
+                                            data-live-max="25">۲۱.۴ °C</span>
+                                            </span>
+                                        </span>
+                                    </div>
+                                    <p class="monitor-name">دمای رک ۱</p>
+                                    <p class="monitor-unit">درجه سانتی‌گراد</p>
+                                    <div class="monitor-status">
+                                        <span class="status-chip ok">طبیعی</span>
+                                    </div>
+                                </div>
+
+                                <div class="monitor-card">
+                                    <div class="monitor-gauge">
+                                        <span class="gauge-ring" style="--gauge-color: var(--db-success); --gauge-pct: 57%;">
+                                            <span class="gauge-inner">
+                                                <i class="mdi mdi-thermometer"></i>
+                                                <span class="gauge-value" data-live-value="22.8" data-live-unit="°C"
+                                            data-live-decimals="1" data-live-spread="0.4" data-live-min="20.5"
+                                            data-live-max="26">۲۲.۸ °C</span>
+                                            </span>
+                                        </span>
+                                    </div>
+                                    <p class="monitor-name">دمای رک ۲</p>
+                                    <p class="monitor-unit">درجه سانتی‌گراد</p>
+                                    <div class="monitor-status">
+                                        <span class="status-chip ok">طبیعی</span>
+                                    </div>
+                                </div>
+
+                                <div class="monitor-card">
+                                    <div class="monitor-gauge">
+                                        <span class="gauge-ring" style="--gauge-color: var(--db-danger); --gauge-pct: 79%;">
+                                            <span class="gauge-inner">
+                                                <i class="mdi mdi-thermometer-alert"></i>
+                                                <span class="gauge-value" data-live-value="31.4" data-live-unit="°C"
+                                            data-live-decimals="1" data-live-spread="0.5" data-live-min="30.5"
+                                            data-live-max="32.8">۳۱.۴ °C</span>
+                                            </span>
+                                        </span>
+                                    </div>
+                                    <p class="monitor-name">دمای رک ۳</p>
+                                    <p class="monitor-unit">درجه سانتی‌گراد</p>
+                                    <div class="monitor-status">
+                                        <span class="status-chip err">بالای آستانه</span>
+                                    </div>
+                                </div>
+
+                                <div class="monitor-card">
+                                    <div class="monitor-gauge">
+                                        <span class="gauge-ring" style="--gauge-color: var(--db-success); --gauge-pct: 46%;">
+                                            <span class="gauge-inner">
+                                                <i class="mdi mdi-water-percent"></i>
+                                                <span class="gauge-value" data-live-value="46" data-live-unit="%"
+                                            data-live-decimals="0" data-live-spread="1" data-live-min="40"
+                                            data-live-max="55">۴۶ %</span>
+                                            </span>
+                                        </span>
+                                    </div>
+                                    <p class="monitor-name">رطوبت متوسط</p>
+                                    <p class="monitor-unit">درصد</p>
+                                    <div class="monitor-status">
+                                        <span class="status-chip ok">طبیعی</span>
+                                    </div>
+                                </div>
+
+                                <div class="monitor-card">
+                                    <div class="monitor-gauge">
+                                        <span class="gauge-ring" style="--gauge-color: var(--db-success); --gauge-pct: 95%;">
+                                            <span class="gauge-inner">
+                                                <i class="mdi mdi-flash"></i>
+                                                <span class="gauge-value" data-live-value="228" data-live-unit="V"
+                                            data-live-decimals="0" data-live-spread="1.5" data-live-min="224"
+                                            data-live-max="232">۲۲۸ V</span>
+                                            </span>
+                                        </span>
+                                    </div>
+                                    <p class="monitor-name">ولتاژ برق</p>
+                                    <p class="monitor-unit">ولت</p>
+                                    <div class="monitor-status">
+                                        <span class="status-chip ok">در محدوده</span>
+                                    </div>
+                                </div>
+
+                                <div class="monitor-card">
+                                    <div class="monitor-gauge">
+                                        <span class="gauge-ring" style="--gauge-color: var(--db-warning); --gauge-pct: 87%;">
+                                            <span class="gauge-inner">
+                                                <i class="mdi mdi-battery-80"></i>
+                                                <span class="gauge-value" data-live-value="87" data-live-unit="%"
+                                            data-live-decimals="0" data-live-spread="1" data-live-min="84"
+                                            data-live-max="90">۸۷ %</span>
+                                            </span>
+                                        </span>
+                                    </div>
+                                    <p class="monitor-name">ظرفیت UPS</p>
+                                    <p class="monitor-unit">درصد ظرفیت</p>
+                                    <div class="monitor-status">
+                                        <span class="status-chip warn">در حال مصرف</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-lg-4 mb-3 mb-lg-0">
+                            <div class="card h-100 mb-0">
+                                <div class="card-head">
+                                    <h5 class="card-title mb-0">بازه مشاهده</h5>
+                                    <a href="monitoring-data.html" class="link-more">داده ها</a>
+                                </div>
+                                <div class="card-body text-center">
+                                    <div class="RangeContainer" dir="ltr">
+                                        <input type="range" class="c-rng" min="0" max="360" step="1" value="75"
+                                            data-range="circular">
+                                    </div>
+                                    <p class="range-caption">
+                                        <strong>۷۵ ساعت</strong><br>
+                                        بازه مشاهده فعلی (۳ روز گذشته)
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-4 mb-3 mb-lg-0">
+                            <div class="card h-100 mb-0">
+                                <div class="card-head">
+                                    <h5 class="card-title mb-0">هشدارهای فعال</h5>
+                                    <a href="monitoring-data.html" class="link-more">گزارش هشدارها</a>
+                                </div>
+                                <div class="card-body">
+                                    <ul class="alert-list">
+                                        <li>
+                                            <span class="alert-icon err"><i class="mdi mdi-thermometer"></i></span>
+                                            <div class="alert-body">
+                                                <p class="alert-title">دمای رک ۳ بالاتر از آستانه</p>
+                                                <span class="alert-meta">۳۱٫۴ درجه - آستانه مجاز ۲۶ درجه</span>
+                                            </div>
+                                        </li>
+                                        <li>
+                                            <span class="alert-icon warn"><i class="mdi mdi-power"></i></span>
+                                            <div class="alert-body">
+                                                <p class="alert-title">ظرفیت UPS در حال مصرف</p>
+                                                <span class="alert-meta">۸۷ درصد - ظرفیت باقی‌مانده ۱۳ درصد</span>
+                                            </div>
+                                        </li>
+                                        <li>
+                                            <span class="alert-icon ok"><i class="mdi mdi-flash"></i></span>
+                                            <div class="alert-body">
+                                                <p class="alert-title">برق ورودی در محدوده مجاز</p>
+                                                <span class="alert-meta">۲۲۸ ولت - بازه مجاز ۲۱۰ تا ۲۴۰ ولت</span>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-4">
+                            <div class="card h-100 mb-0">
+                                <div class="card-head">
+                                    <h5 class="card-title mb-0">آخرین نمونه‌گیری</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="big-clock" data-live-clock>--:--:--</div>
+                                    <div class="summary-row">
+                                        <span class="summary-label">بازه نمونه‌گیری</span>
+                                        <span class="summary-value">هر ۵ ثانیه</span>
+                                    </div>
+                                    <div class="summary-row">
+                                        <span class="summary-label">آخرین ثبت کامل</span>
+                                        <span class="summary-value">۱۴۰۴/۰۷/۱۷ - ۰۹:۴۵</span>
+                                    </div>
+                                    <div class="summary-row">
+                                        <span class="summary-label">سنسورهای متصل</span>
+                                        <span class="summary-value green-color">۱۸ از ۱۸</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- ============ بخش ۲: تنظیمات ============ -->
+                <section class="MonView" id="MonView_Setting" style="display: none;">
+
+                    <div class="row">
+                        <div class="col-lg-6 mb-4 mb-lg-0">
+                            <div class="settings-section">
+                                <h5><i class="mdi mdi-thermometer"></i> نقطه تنظیم دما</h5>
+
+                                <div class="d-flex align-items-center flex-wrap justify-content-between mb-3">
+                                    <span class="mb-0">نقطه تنظیم دمای رک ۱</span>
+                                    <div class="d-flex align-items-center">
+                                        <span class="badge badge-soft-success mr-lg-3"><span
+                                                class="status-dot bg-success"></span>طبیعی</span>
+                                        <div class="counter-widget" data-counter data-min="16" data-max="30"
+                                            data-step="1" data-unit="°C">
+                                            <button type="button" class="counter-btn minus"
+                                                aria-label="کاهش">-</button>
+                                            <span class="counter-value">۲۲ °C</span>
+                                            <button type="button" class="counter-btn plus"
+                                                aria-label="افزایش">+</button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="d-flex align-items-center flex-wrap justify-content-between mb-3">
+                                    <span class="mb-0">نقطه تنظیم دمای رک ۲</span>
+                                    <div class="d-flex align-items-center">
+                                        <span class="badge badge-soft-success mr-lg-3"><span
+                                                class="status-dot bg-success"></span>طبیعی</span>
+                                        <div class="counter-widget" data-counter data-min="16" data-max="30"
+                                            data-step="1" data-unit="°C">
+                                            <button type="button" class="counter-btn minus"
+                                                aria-label="کاهش">-</button>
+                                            <span class="counter-value">۲۲ °C</span>
+                                            <button type="button" class="counter-btn plus"
+                                                aria-label="افزایش">+</button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="d-flex align-items-center flex-wrap justify-content-between">
+                                    <span class="mb-0">نقطه تنظیم دمای رک ۳</span>
+                                    <div class="d-flex align-items-center">
+                                        <span class="badge badge-soft-danger mr-lg-3"><span
+                                                class="status-dot bg-danger"></span>هشدار فعال</span>
+                                        <div class="counter-widget" data-counter data-min="16" data-max="30"
+                                            data-step="1" data-unit="°C">
+                                            <button type="button" class="counter-btn minus"
+                                                aria-label="کاهش">-</button>
+                                            <span class="counter-value">۲۳ °C</span>
+                                            <button type="button" class="counter-btn plus"
+                                                aria-label="افزایش">+</button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <p class="text-muted font-size-12 mb-0 mt-3">محدوده مناسب ۱۸ تا ۲۶ درجه است. نقطه تنظیم
+                                    رک ۳ به‌دلیل نزدیکی به دریچه تهویه کمی بالاتر گرفته شده است.</p>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-6">
+                            <div class="settings-section">
+                                <h5><i class="mdi mdi-fan"></i> زمان خروجی کولر</h5>
+
+                                <div class="d-flex align-items-center flex-wrap justify-content-between mb-3">
+                                    <span class="mb-0">زمان خروجی رک ۱</span>
+                                    <div class="counter-widget" data-counter data-min="5" data-max="60" data-step="1"
+                                        data-unit="دقیقه">
+                                        <button type="button" class="counter-btn minus" aria-label="کاهش">-</button>
+                                        <span class="counter-value">۱۰ دقیقه</span>
+                                        <button type="button" class="counter-btn plus" aria-label="افزایش">+</button>
+                                    </div>
+                                </div>
+
+                                <div class="d-flex align-items-center flex-wrap justify-content-between mb-3">
+                                    <span class="mb-0">زمان خروجی رک ۲</span>
+                                    <div class="counter-widget" data-counter data-min="5" data-max="60" data-step="1"
+                                        data-unit="دقیقه">
+                                        <button type="button" class="counter-btn minus" aria-label="کاهش">-</button>
+                                        <span class="counter-value">۱۲ دقیقه</span>
+                                        <button type="button" class="counter-btn plus" aria-label="افزایش">+</button>
+                                    </div>
+                                </div>
+
+                                <div class="d-flex align-items-center flex-wrap justify-content-between">
+                                    <span class="mb-0">زمان خروجی رک ۳</span>
+                                    <div class="counter-widget" data-counter data-min="5" data-max="60" data-step="1"
+                                        data-unit="دقیقه">
+                                        <button type="button" class="counter-btn minus" aria-label="کاهش">-</button>
+                                        <span class="counter-value">۱۵ دقیقه</span>
+                                        <button type="button" class="counter-btn plus" aria-label="افزایش">+</button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="settings-section">
+                                <h5><i class="mdi mdi-water-percent"></i> رطوبت و گزارش</h5>
+
+                                <div class="d-flex align-items-center flex-wrap justify-content-between mb-3">
+                                    <span class="mb-0">نقطه تنظیم رطوبت</span>
+                                    <div class="counter-widget" data-counter data-min="30" data-max="70" data-step="1"
+                                        data-unit="%">
+                                        <button type="button" class="counter-btn minus" aria-label="کاهش">-</button>
+                                        <span class="counter-value">۵۰ %</span>
+                                        <button type="button" class="counter-btn plus" aria-label="افزایش">+</button>
+                                    </div>
+                                </div>
+
+                                <div class="d-flex align-items-center flex-wrap justify-content-between mb-3">
+                                    <span class="mb-0">باند دما</span>
+                                    <div class="counter-widget" data-counter data-min="1" data-max="5" data-step="1"
+                                        data-unit="°C">
+                                        <button type="button" class="counter-btn minus" aria-label="کاهش">-</button>
+                                        <span class="counter-value">۲ °C</span>
+                                        <button type="button" class="counter-btn plus" aria-label="افزایش">+</button>
+                                    </div>
+                                </div>
+
+                                <div class="d-flex align-items-center flex-wrap justify-content-between mb-3">
+                                    <span class="mb-0">باند رطوبت</span>
+                                    <div class="counter-widget" data-counter data-min="5" data-max="20" data-step="1"
+                                        data-unit="%">
+                                        <button type="button" class="counter-btn minus" aria-label="کاهش">-</button>
+                                        <span class="counter-value">۱۰ %</span>
+                                        <button type="button" class="counter-btn plus" aria-label="افزایش">+</button>
+                                    </div>
+                                </div>
+
+                                <div class="d-flex align-items-center flex-wrap justify-content-between">
+                                    <span class="mb-0">فاصله گزارش</span>
+                                    <div class="counter-widget" data-counter data-min="1" data-max="60" data-step="1"
+                                        data-unit="دقیقه">
+                                        <button type="button" class="counter-btn minus" aria-label="کاهش">-</button>
+                                        <span class="counter-value">۵ دقیقه</span>
+                                        <button type="button" class="counter-btn plus" aria-label="افزایش">+</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="settings-section">
+                        <h5><i class="mdi mdi-key-outline"></i> بازه دسترسی به گزارش اتاق سرور</h5>
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <label class="d-block mb-1" for="monAccessStart">شروع زمان دسترسی</label>
+                                <input type="text" data-jdp id="monAccessStart" name="monAccessStart"
+                                    placeholder="۱۴۰۴/۰۷/۱۰" class="form-control Clock">
+                            </div>
+                            <div class="col-sm-6">
+                                <label class="d-block mb-1" for="monAccessEnd">پایان زمان دسترسی</label>
+                                <input type="text" data-jdp id="monAccessEnd" name="monAccessEnd"
+                                    placeholder="۱۴۰۴/۰۷/۱۷" class="form-control Clock">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="settings-section">
+                        <h5><i class="mdi mdi-bell-ring-outline"></i> آستانه‌های هشدار</h5>
+                        <div class="table-responsive">
+                            <table class="table table-hover align-middle">
+                                <thead>
+                                    <tr>
+                                        <th>پارامتر</th>
+                                        <th class="text-center">آستانه بالا</th>
+                                        <th class="text-center">آستانه پایین</th>
+                                        <th class="text-center">حداقل مجاز</th>
+                                        <th class="text-center">اعلان پیامک</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <th scope="row">دما (°C)</th>
+                                        <td class="text-center">
+                                            <div class="counter-widget" data-counter data-min="15" data-max="35"
+                                                data-step="1">
+                                                <button type="button" class="counter-btn minus"
+                                                    aria-label="کاهش">-</button>
+                                                <span class="counter-value">۲۶</span>
+                                                <button type="button" class="counter-btn plus"
+                                                    aria-label="افزایش">+</button>
+                                            </div>
+                                        </td>
+                                        <td class="text-center">
+                                            <div class="counter-widget" data-counter data-min="10" data-max="25"
+                                                data-step="1">
+                                                <button type="button" class="counter-btn minus"
+                                                    aria-label="کاهش">-</button>
+                                                <span class="counter-value">۱۸</span>
+                                                <button type="button" class="counter-btn plus"
+                                                    aria-label="افزایش">+</button>
+                                            </div>
+                                        </td>
+                                        <td class="text-center">
+                                            <div class="counter-widget" data-counter data-min="10" data-max="25"
+                                                data-step="1">
+                                                <button type="button" class="counter-btn minus"
+                                                    aria-label="کاهش">-</button>
+                                                <span class="counter-value">۱۶</span>
+                                                <button type="button" class="counter-btn plus"
+                                                    aria-label="افزایش">+</button>
+                                            </div>
+                                        </td>
+                                        <td class="text-center">
+                                            <div class="counter-widget" data-counter data-min="18" data-max="32"
+                                                data-step="1">
+                                                <button type="button" class="counter-btn minus"
+                                                    aria-label="کاهش">-</button>
+                                                <span class="counter-value">۲۷</span>
+                                                <button type="button" class="counter-btn plus"
+                                                    aria-label="افزایش">+</button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row">رطوبت (%)</th>
+                                        <td class="text-center">
+                                            <div class="counter-widget" data-counter data-min="40" data-max="80"
+                                                data-step="1">
+                                                <button type="button" class="counter-btn minus"
+                                                    aria-label="کاهش">-</button>
+                                                <span class="counter-value">۶۵</span>
+                                                <button type="button" class="counter-btn plus"
+                                                    aria-label="افزایش">+</button>
+                                            </div>
+                                        </td>
+                                        <td class="text-center">
+                                            <div class="counter-widget" data-counter data-min="20" data-max="50"
+                                                data-step="1">
+                                                <button type="button" class="counter-btn minus"
+                                                    aria-label="کاهش">-</button>
+                                                <span class="counter-value">۳۵</span>
+                                                <button type="button" class="counter-btn plus"
+                                                    aria-label="افزایش">+</button>
+                                            </div>
+                                        </td>
+                                        <td class="text-center">
+                                            <div class="counter-widget" data-counter data-min="20" data-max="50"
+                                                data-step="1">
+                                                <button type="button" class="counter-btn minus"
+                                                    aria-label="کاهش">-</button>
+                                                <span class="counter-value">۳۰</span>
+                                                <button type="button" class="counter-btn plus"
+                                                    aria-label="افزایش">+</button>
+                                            </div>
+                                        </td>
+                                        <td class="text-center">
+                                            <div class="counter-widget" data-counter data-min="60" data-max="90"
+                                                data-step="1">
+                                                <button type="button" class="counter-btn minus"
+                                                    aria-label="کاهش">-</button>
+                                                <span class="counter-value">۷۰</span>
+                                                <button type="button" class="counter-btn plus"
+                                                    aria-label="افزایش">+</button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row">رک ۱ (°C)</th>
+                                        <td class="text-center">
+                                            <div class="counter-widget" data-counter data-min="15" data-max="35"
+                                                data-step="1">
+                                                <button type="button" class="counter-btn minus"
+                                                    aria-label="کاهش">-</button>
+                                                <span class="counter-value">۲۵</span>
+                                                <button type="button" class="counter-btn plus"
+                                                    aria-label="افزایش">+</button>
+                                            </div>
+                                        </td>
+                                        <td class="text-center">
+                                            <div class="counter-widget" data-counter data-min="10" data-max="25"
+                                                data-step="1">
+                                                <button type="button" class="counter-btn minus"
+                                                    aria-label="کاهش">-</button>
+                                                <span class="counter-value">۱۸</span>
+                                                <button type="button" class="counter-btn plus"
+                                                    aria-label="افزایش">+</button>
+                                            </div>
+                                        </td>
+                                        <td class="text-center">
+                                            <div class="counter-widget" data-counter data-min="10" data-max="25"
+                                                data-step="1">
+                                                <button type="button" class="counter-btn minus"
+                                                    aria-label="کاهش">-</button>
+                                                <span class="counter-value">۱۶</span>
+                                                <button type="button" class="counter-btn plus"
+                                                    aria-label="افزایش">+</button>
+                                            </div>
+                                        </td>
+                                        <td class="text-center">
+                                            <div class="counter-widget" data-counter data-min="18" data-max="32"
+                                                data-step="1">
+                                                <button type="button" class="counter-btn minus"
+                                                    aria-label="کاهش">-</button>
+                                                <span class="counter-value">۲۶</span>
+                                                <button type="button" class="counter-btn plus"
+                                                    aria-label="افزایش">+</button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row">رک ۲ (°C)</th>
+                                        <td class="text-center">
+                                            <div class="counter-widget" data-counter data-min="15" data-max="35"
+                                                data-step="1">
+                                                <button type="button" class="counter-btn minus"
+                                                    aria-label="کاهش">-</button>
+                                                <span class="counter-value">۲۵</span>
+                                                <button type="button" class="counter-btn plus"
+                                                    aria-label="افزایش">+</button>
+                                            </div>
+                                        </td>
+                                        <td class="text-center">
+                                            <div class="counter-widget" data-counter data-min="10" data-max="25"
+                                                data-step="1">
+                                                <button type="button" class="counter-btn minus"
+                                                    aria-label="کاهش">-</button>
+                                                <span class="counter-value">۱۷</span>
+                                                <button type="button" class="counter-btn plus"
+                                                    aria-label="افزایش">+</button>
+                                            </div>
+                                        </td>
+                                        <td class="text-center">
+                                            <div class="counter-widget" data-counter data-min="10" data-max="25"
+                                                data-step="1">
+                                                <button type="button" class="counter-btn minus"
+                                                    aria-label="کاهش">-</button>
+                                                <span class="counter-value">۱۵</span>
+                                                <button type="button" class="counter-btn plus"
+                                                    aria-label="افزایش">+</button>
+                                            </div>
+                                        </td>
+                                        <td class="text-center">
+                                            <div class="counter-widget" data-counter data-min="18" data-max="32"
+                                                data-step="1">
+                                                <button type="button" class="counter-btn minus"
+                                                    aria-label="کاهش">-</button>
+                                                <span class="counter-value">۲۶</span>
+                                                <button type="button" class="counter-btn plus"
+                                                    aria-label="افزایش">+</button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row">رک ۳ (°C)</th>
+                                        <td class="text-center">
+                                            <div class="counter-widget" data-counter data-min="15" data-max="35"
+                                                data-step="1">
+                                                <button type="button" class="counter-btn minus"
+                                                    aria-label="کاهش">-</button>
+                                                <span class="counter-value">۲۶</span>
+                                                <button type="button" class="counter-btn plus"
+                                                    aria-label="افزایش">+</button>
+                                            </div>
+                                        </td>
+                                        <td class="text-center">
+                                            <div class="counter-widget" data-counter data-min="10" data-max="25"
+                                                data-step="1">
+                                                <button type="button" class="counter-btn minus"
+                                                    aria-label="کاهش">-</button>
+                                                <span class="counter-value">۱۸</span>
+                                                <button type="button" class="counter-btn plus"
+                                                    aria-label="افزایش">+</button>
+                                            </div>
+                                        </td>
+                                        <td class="text-center">
+                                            <div class="counter-widget" data-counter data-min="10" data-max="25"
+                                                data-step="1">
+                                                <button type="button" class="counter-btn minus"
+                                                    aria-label="کاهش">-</button>
+                                                <span class="counter-value">۱۶</span>
+                                                <button type="button" class="counter-btn plus"
+                                                    aria-label="افزایش">+</button>
+                                            </div>
+                                        </td>
+                                        <td class="text-center">
+                                            <div class="counter-widget" data-counter data-min="18" data-max="32"
+                                                data-step="1">
+                                                <button type="button" class="counter-btn minus"
+                                                    aria-label="کاهش">-</button>
+                                                <span class="counter-value">۲۷</span>
+                                                <button type="button" class="counter-btn plus"
+                                                    aria-label="افزایش">+</button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <p class="text-muted font-size-12 mb-0 mt-3">ارزش‌ها با تغییر شمارنده‌ها به‌روزرسانی و در
+                            هشدارهای بعدی اعمال می‌شوند؛ رک ۳ به‌دلیل نزدیکی به دریچه تهویه آستانه اعلان مستقل دارد.</p>
+                    </div>
+
+                    <div class="btn-row">
+                        <a class="btn btn-primary" href="https://www.instagram.com/con.dev" target="_blank" rel="noopener">ذخیره تنظیمات</a>
+                        <a class="btn btn-outline-primary" href="https://cv.condev.ir/#/fa" target="_blank" rel="noopener">بازنشانی مقادیر</a>
+                        <a class="btn btn-light" href="https://www.instagram.com/con.dev" target="_blank" rel="noopener">هم‌گام‌سازی ساعت
+                            دستگاه</a>
+                    </div>
+                </section>
+
+                <!-- ============ بخش ۳: داده ها ============ -->
+                <section class="MonView" id="MonView_Data" style="display: none;">
+
+                    <div class="card mb-4">
+                        <div class="card-head">
+                            <h5 class="card-title mb-0">دریافت گزارش دوره‌ای</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-lg-4 col-md-6 mb-3 mb-lg-0">
+                                    <label class="d-block mb-1" for="reportParam">نوع گزارش</label>
+                                    <select id="reportParam" name="reportParam" class="form-control">
+                                        <option selected>همه پارامترها</option>
+                                        <option>دما</option>
+                                        <option>رطوبت</option>
+                                        <option>ولتاژ برق</option>
+                                        <option>ظرفیت UPS</option>
+                                        <option>جریان هوا</option>
+                                    </select>
+                                </div>
+                                <div class="col-lg-4 col-md-6 mb-3 mb-lg-0">
+                                    <label class="d-block mb-1" for="reportStart">از تاریخ</label>
+                                    <input type="text" data-jdp id="reportStart" name="reportStart"
+                                        placeholder="۱۴۰۴/۰۷/۱۰" class="form-control">
+                                </div>
+                                <div class="col-lg-4 col-md-6 mb-3 mb-lg-0">
+                                    <label class="d-block mb-1" for="reportEnd">تا تاریخ</label>
+                                    <input type="text" data-jdp id="reportEnd" name="reportEnd"
+                                        placeholder="۱۴۰۴/۰۷/۱۷" class="form-control">
+                                </div>
+                                <div class="col-lg-4 col-md-6 mb-3 mb-lg-0">
+                                    <label class="d-block mb-1">حداکثر رکورد در گزارش</label>
+                                    <div class="counter-widget" data-counter data-min="10" data-max="500"
+                                        data-step="10" data-unit="رکورد">
+                                        <button type="button" class="counter-btn minus" aria-label="کاهش">-</button>
+                                        <span class="counter-value">۱۰۰ رکورد</span>
+                                        <button type="button" class="counter-btn plus" aria-label="افزایش">+</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="btn-row">
+                                <a class="btn btn-primary" href="https://cv.condev.ir/#/fa" target="_blank" rel="noopener">دریافت
+                                    گزارش</a>
+                                <a class="btn btn-light" href="https://www.instagram.com/con.dev" target="_blank" rel="noopener">خروجی XLS</a>
+                                <a class="btn btn-light" href="https://cv.condev.ir/#/fa" target="_blank" rel="noopener">خروجی PDF</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-head">
+                            <h5 class="card-title mb-0">آخرین ثبت‌ها</h5>
+                            <a href="monitoring-data.html" class="link-more">مشاهده همه ثبت‌ها</a>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-hover align-middle">
+                                    <thead>
+                                        <tr>
+                                            <th>تاریخ</th>
+                                            <th>ساعت</th>
+                                            <th>رک</th>
+                                            <th class="text-center">دما (°C)</th>
+                                            <th class="text-center">رطوبت (%)</th>
+                                            <th>وضعیت</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td class="gray-color">۱۴۰۴/۰۷/۱۷</td>
+                                            <td class="gray-color">۰۹:۴۵</td>
+                                            <td>رک ۳</td>
+                                            <td class="text-center">۳۱.۴</td>
+                                            <td class="text-center">۴۸</td>
+                                            <td><span class="badge badge-soft-danger"><span
+                                                    class="status-dot bg-danger"></span>بالای آستانه</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td class="gray-color">۱۴۰۴/۰۷/۱۷</td>
+                                            <td class="gray-color">۰۹:۴۰</td>
+                                            <td>رک ۱</td>
+                                            <td class="text-center">۲۱.۴</td>
+                                            <td class="text-center">۴۵</td>
+                                            <td><span class="badge badge-soft-success"><span
+                                                    class="status-dot bg-success"></span>طبیعی</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td class="gray-color">۱۴۰۴/۰۷/۱۷</td>
+                                            <td class="gray-color">۰۹:۳۵</td>
+                                            <td>رک ۲</td>
+                                            <td class="text-center">۲۲.۸</td>
+                                            <td class="text-center">۴۷</td>
+                                            <td><span class="badge badge-soft-success"><span
+                                                    class="status-dot bg-success"></span>طبیعی</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td class="gray-color">۱۴۰۴/۰۷/۱۶</td>
+                                            <td class="gray-color">۲۲:۱۰</td>
+                                            <td>رک ۳</td>
+                                            <td class="text-center">۲۹.۶</td>
+                                            <td class="text-center">۵۱</td>
+                                            <td><span class="badge badge-soft-warning"><span
+                                                    class="status-dot bg-warning"></span>نزدیک آستانه</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td class="gray-color">۱۴۰۴/۰۷/۱۶</td>
+                                            <td class="gray-color">۱۴:۳۰</td>
+                                            <td>رک ۲</td>
+                                            <td class="text-center">۲۳.۱</td>
+                                            <td class="text-center">۵۰</td>
+                                            <td><span class="badge badge-soft-success"><span
+                                                    class="status-dot bg-success"></span>طبیعی</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td class="gray-color">۱۴۰۴/۰۷/۱۵</td>
+                                            <td class="gray-color">۰۸:۱۵</td>
+                                            <td>رک ۱</td>
+                                            <td class="text-center">۲۰.۹</td>
+                                            <td class="text-center">۴۳</td>
+                                            <td><span class="badge badge-soft-success"><span
+                                                    class="status-dot bg-success"></span>طبیعی</span></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                </section>
+
+            </div>
+            <!-- end main content-->
+
+        </div>
+        <!-- END layout-wrapper -->
+
+    </div>
+    <!-- end container-fluid -->
+
+
+    <!-- JAVASCRIPT -->
+    <script src="assets/libs/jquery/jquery.min.js"></script>
+    <script src="assets/libs/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="assets/libs/simplebar/simplebar.min.js"></script>
+    <script src="assets/libs/node-waves/waves.min.js"></script>
+    <!-- گِیج‌ها و انتخاب تاریخ شمسی -->
+    <script src="assets/js/pages/jalalidatepicker.min.js"></script>
+    <script src="assets/js/pages/Range.js"></script>
+    <script src="assets/js/pages/monitoring.js"></script>
+    <script src="assets/js/app.js"></script>
+    <script src="assets/js/dashboard-ui.js"></script>
+</body>
+
+</html>

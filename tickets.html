@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لیست تیکت ها | سامانه مدیریت تیکت و مانیتورینگ</title>
+    <meta name="description" content="فهرست تیکت‌های ثبت‌شده همراه با وضعیت، اولویت، مسئول پیگیری و جزئیات هر درخواست.">
+    <meta name="author" content="con.dev">
+    <meta name="theme-color" content="#0059FF">
+
+    <meta property="og:type" content="website">
+    <meta property="og:locale" content="fa_IR">
+    <meta property="og:title" content="لیست تیکت ها | سامانه مدیریت تیکت و مانیتورینگ">
+    <meta property="og:description" content="فهرست تیکت‌های ثبت‌شده همراه با وضعیت، اولویت، مسئول پیگیری و جزئیات هر درخواست.">
+
+    <link rel="shortcut icon" href="assets/images/favicon.ico">
+
+    <script>
+        /* انتخاب طرح پیش از رندر شدن صفحه تا پرش رنگ (flash) نداشته باشیم */
+        (function () {
+            var dark = false;
+            try { dark = localStorage.getItem('db-theme') === 'dark'; } catch (e) {}
+            document.write('<link href="assets/css/' + (dark ? 'bootstrap-dark.min.css' : 'bootstrap.min.css') + '" id="bootstrap-style" rel="stylesheet" type="text/css">');
+            document.write('<link href="assets/css/' + (dark ? 'app-dark.css' : 'app.css') + '" id="app-style" rel="stylesheet" type="text/css">');
+        })();
+    </script>
+
+    <link href="assets/css/icons.css" rel="stylesheet" type="text/css">
+    <link href="assets/css/theme.css" rel="stylesheet" type="text/css">
+</head>
+
+<body data-layout="vertical" data-topbar="light" data-mobile-nav="on" class="page-tickets">
+
+    <!-- ناوبری پایین صفحه در حالت موبایل -->
+    <nav class="navigation-bottom mobile-display" aria-label="ناوبری موبایل">
+        <a class="nav-btm-item" href="index.html"><i class="mdi mdi-view-dashboard-outline"></i><span>میز کار</span></a>
+        <a class="nav-btm-item" href="tickets.html"><i class="mdi mdi-ticket-outline"></i><span>تیکت ها</span></a>
+        <a class="nav-btm-item" href="monitoring.html"><i class="mdi mdi-server"></i><span>مانیتورینگ</span></a>
+        <a class="nav-btm-item" href="subjects.html"><i class="mdi mdi-tag-outline"></i><span>عناوین</span></a>
+        <a class="nav-btm-item" href="settings.html"><i class="mdi mdi-tune"></i><span>تنظیمات</span></a>
+    </nav>
+    <div class="navigation-plus mobile-display">
+        <a href="ticket-new.html" title="ثبت تیکت جدید" aria-label="ثبت تیکت جدید">
+            <svg viewBox="0 0 24 24"><path fill="currentColor" d="M17,13H13V17H11V13H7V11H11V7H13V11H17M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2Z"/></svg>
+        </a>
+    </div>
+
+    <div class="container-fluid">
+        <!-- Begin page -->
+        <div id="layout-wrapper">
+
+            <!-- ========== Topbar ========== -->
+            <header id="page-topbar">
+                <div class="navbar-header">
+
+                    <div class="topbar-side topbar-side-start">
+                        <div class="navbar-brand-box">
+                            <a href="index.html" class="brand-link">
+                                <span class="brand-mark"><i class="mdi mdi-ticket-outline"></i></span>
+                                <span class="brand-text">
+                                    <strong>سامانه پشتیبانی</strong>
+                                    <small>مدیریت تیکت و مانیتورینگ</small>
+                                </span>
+                            </a>
+                        </div>
+
+                        <button type="button" class="btn header-item noti-icon" id="vertical-menu-btn"
+                            aria-label="باز و بسته کردن منو">
+                            <i class="fa fa-fw fa-bars"></i>
+                        </button>
+
+                        <form class="app-search d-none d-lg-inline-block" role="search" onsubmit="return false;">
+                            <div class="position-relative">
+                                <input type="text" class="form-control" placeholder="جستجو در این صفحه..."
+                                    aria-label="جستجو" autocomplete="off">
+                                <span class="bx bx-search-alt"></span>
+                            </div>
+                        </form>
+                    </div>
+
+                    <div class="topbar-side topbar-side-end">
+                        <h3 class="topbar-page-title d-lg-none">لیست تیکت ها</h3>
+
+                        <button type="button" class="btn header-item noti-icon d-lg-none" data-search-toggle
+                            aria-label="جستجو">
+                            <i class="mdi mdi-magnify"></i>
+                        </button>
+
+
+
+                        <button type="button" class="btn header-item noti-icon d-none d-lg-inline-flex"
+                            data-toggle="fullscreen" aria-label="تمام صفحه">
+                            <i class="mdi mdi-fullscreen"></i>
+                        </button>
+
+                        <button type="button" class="btn header-item noti-icon" id="theme-toggle"
+                            aria-label="تغییر طرح روشن و تیره" title="تغییر طرح روشن و تیره">
+                            <i class="mdi mdi-weather-night"></i>
+                        </button>
+
+                        <div class="dropdown d-inline-block">
+                            <button type="button" class="btn header-item noti-icon waves-effect"
+                                id="page-header-notifications-dropdown" data-toggle="dropdown" aria-haspopup="true"
+                                aria-expanded="false" aria-label="اعلان ها">
+                                <i class="mdi mdi-bell-outline"></i>
+                                <span class="badge badge-danger badge-pill">۳</span>
+                            </button>
+                            <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right p-0"
+                                aria-labelledby="page-header-notifications-dropdown">
+                                <div class="p-3">
+                                    <div class="row align-items-center">
+                                        <div class="col">
+                                            <h6 class="m-0">اعلان ها</h6>
+                                        </div>
+                                        <div class="col-auto">
+                                            <a href="tickets.html" class="small">مشاهده همه</a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div data-simplebar style="max-height: 280px;">
+                                    <a href="tickets.html" class="text-reset notification-item">
+                                        <div class="media">
+                                            <div class="avatar-xs mr-3">
+                                                <span class="avatar-title bg-primary rounded-circle font-size-16">
+                                                    <i class="mdi mdi-ticket-outline"></i>
+                                                </span>
+                                            </div>
+                                            <div class="media-body">
+                                                <h6 class="mt-0 mb-1">تیکت جدید #۳۱۹۹۲ ثبت شد</h6>
+                                                <div class="font-size-12 text-muted">
+                                                    <p class="mb-1">نصب نرم‌افزار حسابداری روی سیستم واحد مالی</p>
+                                                    <p class="mb-0"><i class="mdi mdi-clock-outline"></i> ۴ دقیقه پیش</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </a>
+                                    <a href="referrals.html" class="text-reset notification-item">
+                                        <div class="media">
+                                            <img src="assets/images/users/avatar-6.jpg" class="mr-3 rounded-circle avatar-xs"
+                                                alt="تصویر کاربر">
+                                            <div class="media-body">
+                                                <h6 class="mt-0 mb-1">تیکت #۳۱۹۵۸ به شما ارجاع شد</h6>
+                                                <div class="font-size-12 text-muted">
+                                                    <p class="mb-1">سارا احمدی درخواست بررسی قطعی شبکه را ارجاع داد</p>
+                                                    <p class="mb-0"><i class="mdi mdi-clock-outline"></i> ۳۲ دقیقه پیش</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </a>
+                                    <a href="monitoring.html" class="text-reset notification-item">
+                                        <div class="media">
+                                            <div class="avatar-xs mr-3">
+                                                <span class="avatar-title bg-danger rounded-circle font-size-16">
+                                                    <i class="mdi mdi-alert-outline"></i>
+                                                </span>
+                                            </div>
+                                            <div class="media-body">
+                                                <h6 class="mt-0 mb-1">هشدار دمای رک ۳</h6>
+                                                <div class="font-size-12 text-muted">
+                                                    <p class="mb-1">دمای رک از آستانه تعیین‌شده عبور کرد (۳۱.۴ درجه)</p>
+                                                    <p class="mb-0"><i class="mdi mdi-clock-outline"></i> ۱ ساعت پیش</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </a>
+                                    <a href="tickets.html" class="text-reset notification-item">
+                                        <div class="media">
+                                            <img src="assets/images/users/avatar-4.jpg" class="mr-3 rounded-circle avatar-xs"
+                                                alt="تصویر کاربر">
+                                            <div class="media-body">
+                                                <h6 class="mt-0 mb-1">تیکت #۳۱۸۷۰ بسته شد</h6>
+                                                <div class="font-size-12 text-muted">
+                                                    <p class="mb-1">رضا کریمی مشکل پیکربندی صندوق پست الکترونیک را بست</p>
+                                                    <p class="mb-0"><i class="mdi mdi-clock-outline"></i> ۲ ساعت پیش</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </a>
+                                </div>
+                                <div class="p-2 border-top">
+                                    <a class="btn btn-sm btn-link font-size-14 btn-block text-center"
+                                        href="tickets.html">
+                                        <i class="mdi mdi-arrow-right-circle mr-1"></i> مشاهده همه اعلان ها
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="dropdown d-inline-block">
+                            <button type="button" class="btn header-item waves-effect user-chip"
+                                id="page-header-user-dropdown" data-toggle="dropdown" aria-haspopup="true"
+                                aria-expanded="false">
+                                <img class="rounded-circle header-profile-user" src="assets/images/users/avatar-2.jpg"
+                                    alt="تصویر کاربر">
+                                <span class="user-chip-meta">
+                                    <span class="user-name">محسن میرجانیان</span>
+                                    <span class="user-role">مدیر فناوری اطلاعات</span>
+                                </span>
+                                <i class="mdi mdi-chevron-down d-none d-lg-inline-block gray-color"></i>
+                            </button>
+                            <div class="dropdown-menu dropdown-menu-right">
+                                <a class="dropdown-item" href="https://www.instagram.com/con.dev" target="_blank" rel="noopener">
+                                    <i class="bx bx-user font-size-16 align-middle mr-1"></i> پروفایل</a>
+                                <a class="dropdown-item" href="tickets.html">
+                                    <i class="bx bx-message font-size-16 align-middle mr-1"></i> پیام ها</a>
+                                <a class="dropdown-item" href="settings.html">
+                                    <i class="bx bx-wrench font-size-16 align-middle mr-1"></i> تنظیمات</a>
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item" href="https://cv.condev.ir/#/fa" target="_blank" rel="noopener">
+                                    <i class="bx bx-lock-open font-size-16 align-middle mr-1"></i> تغییر رمز عبور</a>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </header>
+
+
+                        <!-- ========== Left Sidebar Start ========== -->
+            <div class="vertical-menu overflow-hidden">
+                <div class="sidebar-scroll" data-simplebar>
+                    <div class="sidebar-cta">
+                        <a href="ticket-new.html" class="btn-submit-ticket">
+                            <svg viewBox="0 0 24 24"><path fill="currentColor" d="M22 10V6C22 4.89 21.1 4 20 4H4C2.9 4 2 4.89 2 6V10C3.11 10 4 10.9 4 12S3.11 14 2 14V18C2 19.1 2.9 20 4 20H20C21.1 20 22 19.1 22 18V14C20.9 14 20 13.1 20 12S20.9 10 22 10M20 8.54C18.81 9.23 18 10.53 18 12S18.81 14.77 20 15.46V18H4V15.46C5.19 14.77 6 13.47 6 12C6 10.5 5.2 9.23 4 8.54L4 6H20V8.54M11 15H13V17H11M11 11H13V13H11M11 7H13V9H11Z"/></svg>
+                            ثبت تیکت جدید
+                        </a>
+                    </div>
+
+                    <div id="sidebar-menu">
+                        <ul class="dash-menu">
+                            <li class="menu-title">مدیریت</li>
+
+                            <li class="nav-item">
+                                <a class="nav-link" href="index.html">
+                                    <i class="mdi mdi-view-dashboard-outline"></i>
+                                    <span class="nav-label">میز کار</span>
+                                </a>
+                            </li>
+
+                            <li class="nav-item has-children">
+                                <button type="button" class="nav-link nav-toggle" aria-expanded="false">
+                                    <i class="mdi mdi-ticket-outline"></i>
+                                    <span class="nav-label">تیکت و ارجاعات</span>
+                                    <span class="nav-badge">۱۰</span>
+                                    <i class="fa fa-angle-down nav-arrow"></i>
+                                </button>
+                                <ul class="nav-sub">
+                                    <li><a href="tickets.html">لیست تیکت ها</a></li>
+                                    <li><a href="ticket-new.html">ثبت تیکت جدید</a></li>
+                                    <li><a href="referrals.html">ارجاع تیکت</a></li>
+                                </ul>
+                            </li>
+
+                            <li class="nav-item">
+                                <a class="nav-link" href="subjects.html">
+                                    <i class="mdi mdi-tag-outline"></i>
+                                    <span class="nav-label">مدیریت عناوین</span>
+                                </a>
+                            </li>
+
+                            <li class="menu-title">مانیتورینگ</li>
+
+                            <li class="nav-item has-children">
+                                <button type="button" class="nav-link nav-toggle" aria-expanded="false">
+                                    <i class="mdi mdi-server"></i>
+                                    <span class="nav-label">اتاق سرور</span>
+                                    <i class="fa fa-angle-down nav-arrow"></i>
+                                </button>
+                                <ul class="nav-sub">
+                                    <li><a href="monitoring.html">داشبورد مانیتورینگ</a></li>
+                                    <li><a href="monitoring-data.html">داده های مانیتورینگ</a></li>
+                                    <li><a href="monitoring-settings.html">تنظیمات مانیتورینگ</a></li>
+                                </ul>
+                            </li>
+
+                            <li class="menu-title">سایر</li>
+
+                            <li class="nav-item">
+                                <a class="nav-link" href="survey.html">
+                                    <i class="mdi mdi-clipboard-text-outline"></i>
+                                    <span class="nav-label">نظرسنجی رضایت</span>
+                                </a>
+                            </li>
+
+                            <li class="nav-item">
+                                <a class="nav-link" href="settings.html">
+                                    <i class="mdi mdi-tune"></i>
+                                    <span class="nav-label">تنظیمات سیستم</span>
+                                </a>
+                            </li>
+                        </ul>
+
+                </div>
+            </div>
+            </div>
+            <!-- Left Sidebar End -->
+
+
+            <!-- ============================================================== -->
+            <!-- Start right Content here -->
+            <!-- ============================================================== -->
+            <div class="main-content">
+
+                <section class="page-content Container_Main Margin-Top">
+                    <!-- سرصفحه صفحه -->
+                    <div class="page-head">
+                        <div>
+                            <h4 class="page-title">جزئیات تیکت ۳۱۹۸۸</h4>
+                            <p class="page-subtitle">نصب نرم‌افزار حسابداری روی سیستم واحد مالی • ثبت‌شده در ۱۴۰۴/۰۷/۱۶</p>
+                        </div>
+                        <div class="page-head-actions">
+                            <a href="index.html" class="btn btn-light btn-sm">
+                                <i class="mdi mdi-format-list-checks mr-1"></i> فهرست تیکت‌ها
+                            </a>
+                            <a href="referrals.html" class="btn btn-outline-primary btn-sm">
+                                <i class="mdi mdi-share-variant mr-1"></i> ارجاع به متخصص
+                            </a>
+                            <a class="btn btn-primary btn-sm" href="https://cv.condev.ir/#/fa" target="_blank" rel="noopener">
+                                <i class="mdi mdi-reply mr-1"></i> ثبت پاسخ
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-lg-8">
+
+                            <!-- موضوع تیکت -->
+                            <div class="card mb-4">
+                                <div class="card-body">
+                                    <div class="card-head">
+                                        <div>
+                                            <h5 class="card-title mb-0">موضوع تیکت</h5>
+                                            <p class="text-muted font-size-12 mb-0 mt-1">شماره تیکت ۳۱۹۸۸ • دپارتمان مالی و اداری</p>
+                                        </div>
+                                        <span class="badge badge-soft-warning"><span
+                                                class="status-dot bg-warning"></span>در دست اقدام</span>
+                                    </div>
+                                    <h6 class="mb-3">نصب نرم‌افزار حسابداری سپیدار نسخه ۱۴۰۴ روی سیستم واحد مالی و انتقال دیتابیس نسخه قبلی</h6>
+                                    <div class="ticket-meta">
+                                        <div class="meta-item">
+                                            <span class="meta-label">درخواست‌کننده</span>
+                                            <span class="meta-value">رضا کریمی</span>
+                                        </div>
+                                        <div class="meta-item">
+                                            <span class="meta-label">دپارتمان</span>
+                                            <span class="meta-value">مالی و اداری</span>
+                                        </div>
+                                        <div class="meta-item">
+                                            <span class="meta-label">سرویس</span>
+                                            <span class="meta-value">نرم‌افزار</span>
+                                        </div>
+                                        <div class="meta-item">
+                                            <span class="meta-label">زمان ارسال</span>
+                                            <span class="meta-value">۱۴۰۴/۰۷/۱۶ - ۰۸:۴۵</span>
+                                        </div>
+                                        <div class="meta-item">
+                                            <span class="meta-label">آخرین به‌روزرسانی</span>
+                                            <span class="meta-value">۱۴۰۴/۰۷/۱۷ - ۱۱:۵۰</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- گفت‌وگوی تیکت -->
+                            <div class="card mb-4">
+                                <div class="card-body">
+                                    <div class="card-head">
+                                        <h5 class="card-title mb-0">گفت‌وگوی تیکت</h5>
+                                        <span class="text-muted font-size-12">۴ پیام</span>
+                                    </div>
+                                    <div class="list-group">
+                                        <div class="list-group-item">
+                                            <div class="d-flex flex-wrap align-items-center justify-content-between mb-2">
+                                                <div class="ticket-table-user">
+                                                    <img src="assets/images/users/avatar-4.jpg" alt="رضا کریمی"
+                                                        class="avatar-sm rounded-circle mr-2">
+                                                    <div>
+                                                        <h5>رضا کریمی</h5>
+                                                        <p>کارشناس سخت‌افزار</p>
+                                                    </div>
+                                                </div>
+                                                <span class="text-muted font-size-12">۱۴۰۴/۰۷/۱۶ - ۰۸:۴۵</span>
+                                            </div>
+                                            <p class="mb-0">با سلام. برای پایان‌گیری ماه جاری، سیستم واحد مالی تا روز پنجشنبه باید آماده باشد. لطفاً نرم‌افزار حسابداری سپیدار نسخه ۱۴۰۴ را روی سیستم جدید واحد مالی نصب و دیتابیس نسخه قبلی را منتقل کنید. لایسنس تا پایان سال معتبر است.</p>
+                                        </div>
+                                        <div class="list-group-item">
+                                            <div class="d-flex flex-wrap align-items-center justify-content-between mb-2">
+                                                <div class="ticket-table-user">
+                                                    <img src="assets/images/users/avatar-2.jpg" alt="محسن میرجانیان"
+                                                        class="avatar-sm rounded-circle mr-2">
+                                                    <div>
+                                                        <h5>محسن میرجانیان</h5>
+                                                        <p>مدیر فناوری اطلاعات</p>
+                                                    </div>
+                                                </div>
+                                                <span class="text-muted font-size-12">۱۴۰۴/۰۷/۱۶ - ۱۰:۱۵</span>
+                                            </div>
+                                            <p class="mb-0">دریافت شد. تیکت به گروه نرم‌افزار ارجاع داده شد و هماهنگی با مریم نیک‌پور انجام گرفت؛ بازدید اولیه از سیستم فردا صبح انجام می‌شود.</p>
+                                        </div>
+                                        <div class="list-group-item">
+                                            <div class="d-flex flex-wrap align-items-center justify-content-between mb-2">
+                                                <div class="ticket-table-user">
+                                                    <img src="assets/images/users/avatar-5.jpg" alt="مریم نیک‌پور"
+                                                        class="avatar-sm rounded-circle mr-2">
+                                                    <div>
+                                                        <h5>مریم نیک‌پور</h5>
+                                                        <p>کارشناس نرم‌افزار</p>
+                                                    </div>
+                                                </div>
+                                                <span class="text-muted font-size-12">۱۴۰۴/۰۷/۱۷ - ۰۹:۳۰</span>
+                                            </div>
+                                            <p class="mb-0">سیستم واحد مالی بازدید شد؛ ویندوز ۱۱ دارد و از نظر حداقل سیستمی مناسب است. بکاپ کامل دیتابیس فعلی گرفته شد و نصب نرم‌افزار امروز از ساعت ۱۳:۰۰ آغاز می‌شود.</p>
+                                        </div>
+                                        <div class="list-group-item">
+                                            <div class="d-flex flex-wrap align-items-center justify-content-between mb-2">
+                                                <div class="ticket-table-user">
+                                                    <img src="assets/images/users/avatar-3.jpg" alt="علی رضایی"
+                                                        class="avatar-sm rounded-circle mr-2">
+                                                    <div>
+                                                        <h5>علی رضایی</h5>
+                                                        <p>پشتیبانی فنی</p>
+                                                    </div>
+                                                </div>
+                                                <span class="text-muted font-size-12">۱۴۰۴/۰۷/۱۷ - ۱۱:۵۰</span>
+                                            </div>
+                                            <p class="mb-0">هماهنگی پشتیبانی حضوری انجام شد؛ پورت شبکه و اتصالات سیستم بررسی و سالم اعلام گردید. به محض پایان نصب، نتیجه در همین تیکت گزارش خواهد شد.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- پیوست‌ها -->
+                            <div class="card">
+                                <div class="card-body">
+                                    <div class="card-head">
+                                        <h5 class="card-title mb-0">پیوست‌های تیکت</h5>
+                                        <a class="btn btn-outline-primary btn-sm" href="https://www.instagram.com/con.dev" target="_blank" rel="noopener">
+                                            <i class="mdi mdi-paperclip mr-1"></i> افزودن پیوست
+                                        </a>
+                                    </div>
+                                    <ul class="ticket-menu-list">
+                                        <li>
+                                            <a class="ticket-row" href="https://cv.condev.ir/#/fa" target="_blank" rel="noopener">
+                                                <i class="mdi mdi-file-pdf-outline font-size-24 gray-color"></i>
+                                                <div class="flex-grow-1">
+                                                    <p class="mb-0 font-weight-bold">لایسنس-سپیدار-۱۴۰۴.pdf</p>
+                                                    <p class="mb-0 text-muted font-size-12">۲۴۵ کیلوبایت • ارسالی رضا کریمی • ۱۴۰۴/۰۷/۱۶</p>
+                                                </div>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a class="ticket-row" href="https://www.instagram.com/con.dev" target="_blank" rel="noopener">
+                                                <i class="mdi mdi-file-image-outline font-size-24 gray-color"></i>
+                                                <div class="flex-grow-1">
+                                                    <p class="mb-0 font-weight-bold">عکس-سیستم-واحد-مالی.jpg</p>
+                                                    <p class="mb-0 text-muted font-size-12">۱٫۲ مگابایت • ارسالی مریم نیک‌پور • ۱۴۰۴/۰۷/۱۷</p>
+                                                </div>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a class="ticket-row" href="https://cv.condev.ir/#/fa" target="_blank" rel="noopener">
+                                                <i class="mdi mdi-file-excel-outline font-size-24 gray-color"></i>
+                                                <div class="flex-grow-1">
+                                                    <p class="mb-0 font-weight-bold">گزارش-آزمایش-سخت‌افزار.xlsx</p>
+                                                    <p class="mb-0 text-muted font-size-12">۸۶ کیلوبایت • ارسالی علی رضایی • ۱۴۰۴/۰۷/۱۷</p>
+                                                </div>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="col-lg-4">
+
+                            <!-- مدیریت تیکت -->
+                            <div class="card mb-4">
+                                <div class="card-body">
+                                    <div class="card-head">
+                                        <h5 class="card-title mb-0">مدیریت تیکت</h5>
+                                        <span class="badge badge-soft-gray">شماره ۳۱۹۸۸</span>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>وضعیت تیکت</label>
+                                        <div class="dropdown">
+                                            <button class="btn btn-light dropdown-toggle" type="button"
+                                                data-toggle="dropdown" aria-expanded="false">
+                                                در دست اقدام
+                                                <i class="fa fa-angle-down mx-1"></i>
+                                            </button>
+                                            <div class="dropdown-menu">
+                                                <button type="button" class="dropdown-item" data-set-label>جدید</button>
+                                                <button type="button" class="dropdown-item" data-set-label>در دست اقدام</button>
+                                                <button type="button" class="dropdown-item" data-set-label>ارجاع شده</button>
+                                                <button type="button" class="dropdown-item" data-set-label>خاتمه یافته</button>
+                                                <button type="button" class="dropdown-item" data-set-label>بایگانی</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>اولویت</label>
+                                        <div class="dropdown">
+                                            <button class="btn btn-light dropdown-toggle" type="button"
+                                                data-toggle="dropdown" aria-expanded="false">
+                                                متوسط
+                                                <i class="fa fa-angle-down mx-1"></i>
+                                            </button>
+                                            <div class="dropdown-menu">
+                                                <button type="button" class="dropdown-item" data-set-label>عادی</button>
+                                                <button type="button" class="dropdown-item" data-set-label>متوسط</button>
+                                                <button type="button" class="dropdown-item" data-set-label>بالا</button>
+                                                <button type="button" class="dropdown-item" data-set-label>فوری</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>مسئول پیگیری</label>
+                                        <div class="dropdown">
+                                            <button class="btn btn-light dropdown-toggle" type="button"
+                                                data-toggle="dropdown" aria-expanded="false">
+                                                مریم نیک‌پور
+                                                <i class="fa fa-angle-down mx-1"></i>
+                                            </button>
+                                            <div class="dropdown-menu">
+                                                <button type="button" class="dropdown-item" data-set-label>محسن میرجانیان</button>
+                                                <button type="button" class="dropdown-item" data-set-label>سارا احمدی</button>
+                                                <button type="button" class="dropdown-item" data-set-label>رضا کریمی</button>
+                                                <button type="button" class="dropdown-item" data-set-label>مریم نیک‌پور</button>
+                                                <button type="button" class="dropdown-item" data-set-label>علی رضایی</button>
+                                                <button type="button" class="dropdown-item" data-set-label>نگار موسوی</button>
+                                                <button type="button" class="dropdown-item" data-set-label>حسین صادقی</button>
+                                                <button type="button" class="dropdown-item" data-set-label>امیر توکلی</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- مسئول پیگیری -->
+                            <div class="card mb-4">
+                                <div class="card-body">
+                                    <div class="card-head">
+                                        <h5 class="card-title mb-0">مسئول پیگیری</h5>
+                                    </div>
+                                    <div class="ticket-table-user">
+                                        <img src="assets/images/users/avatar-5.jpg" alt="مریم نیک‌پور"
+                                            class="avatar-sm rounded-circle mr-2">
+                                        <div>
+                                            <h5>مریم نیک‌پور</h5>
+                                            <p>کارشناس نرم‌افزار</p>
+                                        </div>
+                                    </div>
+                                    <p class="text-muted font-size-12 mt-3 mb-0">از تاریخ ۱۴۰۴/۰۷/۱۶ مسئول پیگیری این تیکت است.</p>
+                                </div>
+                            </div>
+
+                            <!-- سوابق تیکت -->
+                            <div class="card">
+                                <div class="card-body">
+                                    <div class="card-head">
+                                        <h5 class="card-title mb-0">سوابق تیکت</h5>
+                                    </div>
+                                    <ul class="ticket-menu-list">
+                                        <li>
+                                            <i class="mdi mdi-plus-circle-outline mr-2"></i>
+                                            ثبت تیکت توسط رضا کریمی
+                                            <span class="text-muted font-size-12 d-block">۱۴۰۴/۰۷/۱۶ - ۰۸:۴۵</span>
+                                        </li>
+                                        <li>
+                                            <i class="mdi mdi-account-arrow-right-outline mr-2"></i>
+                                            تخصیص به مریم نیک‌پور
+                                            <span class="text-muted font-size-12 d-block">۱۴۰۴/۰۷/۱۶ - ۱۰:۲۰</span>
+                                        </li>
+                                        <li>
+                                            <i class="mdi mdi-database-check mr-2"></i>
+                                            بررسی سیستم و گرفتن بکاپ دیتابیس
+                                            <span class="text-muted font-size-12 d-block">۱۴۰۴/۰۷/۱۷ - ۰۹:۳۰</span>
+                                        </li>
+                                        <li>
+                                            <i class="mdi mdi-clock-outline mr-2"></i>
+                                            زمان‌بندی نصب برای ساعت ۱۳:۰۰
+                                            <span class="text-muted font-size-12 d-block">۱۴۰۴/۰۷/۱۷ - ۱۱:۵۰</span>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <!-- اقدامات تیکت -->
+                    <div class="btn-row">
+                        <a class="btn btn-primary" href="https://cv.condev.ir/#/fa" target="_blank" rel="noopener">
+                            <i class="mdi mdi-check-all mr-1"></i> ثبت پاسخ و خاتمه تیکت
+                        </a>
+                        <a href="referrals.html" class="btn btn-outline-primary">
+                            <i class="mdi mdi-share-variant mr-1"></i> ارجاع به سایر همکاران
+                        </a>
+                        <a class="btn btn-light" href="https://www.instagram.com/con.dev" target="_blank" rel="noopener">
+                            <i class="mdi mdi-archive-outline mr-1"></i> بایگانی
+                        </a>
+                    </div>
+                </section>
+                <!-- End Page-content -->
+
+            </div>
+            <!-- end main content-->
+
+        </div>
+        <!-- END layout-wrapper -->
+
+    </div>
+    <!-- end container-fluid -->
+
+
+    <!-- JAVASCRIPT -->
+    <script src="assets/libs/jquery/jquery.min.js"></script>
+    <script src="assets/libs/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="assets/libs/simplebar/simplebar.min.js"></script>
+    <script src="assets/libs/node-waves/waves.min.js"></script>
+    <script src="assets/js/app.js"></script>
+    <script src="assets/js/dashboard-ui.js"></script>
+</body>
+
+</html>

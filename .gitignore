@@ -1,0 +1,32 @@
+# ---- سیستم‌عامل ----
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ---- ادیتورها ----
+.vscode/
+.idea/
+*.sublime-*
+
+# ---- وابستگی‌ها و بیلد ----
+node_modules/
+dist/
+build/
+.cache/
+
+# ---- ابزارهای استقرار ----
+.vercel/
+.netlify/
+
+# ---- لاگ‌ها و فایل‌های موقت ----
+*.log
+npm-debug.log*
+yarn-error.log*
+*.tmp
+*.bak
+*~
+
+# ---- درز اطلاعات محلی ----
+.env
+.env.*
+!.env.example

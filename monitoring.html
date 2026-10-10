@@ -4,17 +4,113 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>مانیتورینگ اتاق سرور | سامانه مدیریت تیکت و مانیتورینگ</title>
-    <meta name="description" content="پایش زنده دما، رطوبت، برق و وضعیت تجهیزات اتاق سرور به همراه شاخص‌های هشدار.">
+    <title>مانیتورینگ اتاق سرور | سامانه پشتیبانی</title>
+    <meta name="description" content="پایش زنده دما، رطوبت، برق و وضعیت تجهیزات اتاق سرور به همراه شاخص های هشدار و گزارش رویدادها.">
     <meta name="author" content="con.dev">
     <meta name="theme-color" content="#0059FF">
 
-    <meta property="og:type" content="website">
-    <meta property="og:locale" content="fa_IR">
-    <meta property="og:title" content="مانیتورینگ اتاق سرور | سامانه مدیریت تیکت و مانیتورینگ">
-    <meta property="og:description" content="پایش زنده دما، رطوبت، برق و وضعیت تجهیزات اتاق سرور به همراه شاخص‌های هشدار.">
+    <link rel="canonical" href="https://dashboard-2-puce.vercel.app/monitoring.html">
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
 
-    <link rel="shortcut icon" href="assets/images/favicon.ico">
+    <!-- Icons -->
+    <link rel="icon" href="/favicon.ico" sizes="any">
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+    <link rel="icon" type="image/png" sizes="48x48" href="/assets/images/favicon-48x48.png">
+    <link rel="icon" type="image/png" sizes="96x96" href="/assets/images/favicon-96x96.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="/assets/images/favicon-192x192.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="manifest" href="/site.webmanifest">
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="سامانه پشتیبانی">
+    <meta property="og:locale" content="fa_IR">
+    <meta property="og:url" content="https://dashboard-2-puce.vercel.app/monitoring.html">
+    <meta property="og:title" content="مانیتورینگ اتاق سرور | سامانه پشتیبانی">
+    <meta property="og:description" content="پایش زنده دما، رطوبت، برق و وضعیت تجهیزات اتاق سرور به همراه شاخص های هشدار و گزارش رویدادها.">
+    <meta property="og:image" content="https://dashboard-2-puce.vercel.app/assets/images/og-monitoring.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="کارت سامانه پشتیبانی: صفحه مانیتورینگ اتاق سرور با گیج های سنسور">
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="مانیتورینگ اتاق سرور | سامانه پشتیبانی">
+    <meta name="twitter:description" content="پایش زنده دما، رطوبت، برق و وضعیت تجهیزات اتاق سرور به همراه شاخص های هشدار و گزارش رویدادها.">
+    <meta name="twitter:image" content="https://dashboard-2-puce.vercel.app/assets/images/og-monitoring.png">
+    <meta name="twitter:image:alt" content="کارت سامانه پشتیبانی: صفحه مانیتورینگ اتاق سرور با گیج های سنسور">
+
+    <!-- Structured data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "WebSite",
+          "@id": "https://dashboard-2-puce.vercel.app/#website",
+          "url": "https://dashboard-2-puce.vercel.app/",
+          "name": "سامانه پشتیبانی",
+          "alternateName": "سامانه مدیریت تیکت و مانیتورینگ",
+          "inLanguage": "fa-IR",
+          "publisher": {
+            "@id": "https://dashboard-2-puce.vercel.app/#organization"
+          }
+        },
+        {
+          "@type": "Organization",
+          "@id": "https://dashboard-2-puce.vercel.app/#organization",
+          "name": "سامانه پشتیبانی",
+          "url": "https://dashboard-2-puce.vercel.app/",
+          "logo": {
+            "@type": "ImageObject",
+            "url": "https://dashboard-2-puce.vercel.app/assets/images/favicon-512x512.png",
+            "width": 512,
+            "height": 512
+          },
+          "sameAs": [
+            "https://www.instagram.com/con.dev",
+            "https://cv.condev.ir/#/fa"
+          ]
+        },
+        {
+          "@type": "WebPage",
+          "@id": "https://dashboard-2-puce.vercel.app/monitoring.html#webpage",
+          "url": "https://dashboard-2-puce.vercel.app/monitoring.html",
+          "name": "مانیتورینگ اتاق سرور | سامانه پشتیبانی",
+          "description": "پایش زنده دما، رطوبت، برق و وضعیت تجهیزات اتاق سرور به همراه شاخص های هشدار و گزارش رویدادها.",
+          "inLanguage": "fa-IR",
+          "isPartOf": {
+            "@id": "https://dashboard-2-puce.vercel.app/#website"
+          },
+          "primaryImageOfPage": {
+            "@type": "ImageObject",
+            "url": "https://dashboard-2-puce.vercel.app/assets/images/og-monitoring.png"
+          },
+          "breadcrumb": {
+            "@id": "https://dashboard-2-puce.vercel.app/monitoring.html#breadcrumb"
+          }
+        },
+        {
+          "@type": "BreadcrumbList",
+          "@id": "https://dashboard-2-puce.vercel.app/monitoring.html#breadcrumb",
+          "itemListElement": [
+            {
+              "@type": "ListItem",
+              "position": 1,
+              "name": "داشبورد",
+              "item": "https://dashboard-2-puce.vercel.app/"
+            },
+            {
+              "@type": "ListItem",
+              "position": 2,
+              "name": "مانیتورینگ اتاق سرور"
+            }
+          ]
+        }
+      ]
+    }
+    </script>
+
 
     <script>
         /* انتخاب طرح پیش از رندر شدن صفحه تا پرش رنگ (flash) نداشته باشیم */
@@ -36,7 +132,7 @@
 
     <!-- ناوبری پایین صفحه در حالت موبایل -->
     <nav class="navigation-bottom mobile-display" aria-label="ناوبری موبایل">
-        <a class="nav-btm-item" href="index.html"><i class="mdi mdi-view-dashboard-outline"></i><span>میز کار</span></a>
+        <a class="nav-btm-item" href="/"><i class="mdi mdi-view-dashboard-outline"></i><span>میز کار</span></a>
         <a class="nav-btm-item" href="tickets.html"><i class="mdi mdi-ticket-outline"></i><span>تیکت ها</span></a>
         <a class="nav-btm-item" href="monitoring.html"><i class="mdi mdi-server"></i><span>مانیتورینگ</span></a>
         <a class="nav-btm-item" href="subjects.html"><i class="mdi mdi-tag-outline"></i><span>عناوین</span></a>
@@ -58,7 +154,7 @@
 
                     <div class="topbar-side topbar-side-start">
                         <div class="navbar-brand-box">
-                            <a href="index.html" class="brand-link">
+                            <a href="/" class="brand-link">
                                 <span class="brand-mark"><i class="mdi mdi-ticket-outline"></i></span>
                                 <span class="brand-text">
                                     <strong>سامانه پشتیبانی</strong>
@@ -234,7 +330,7 @@
                             <li class="menu-title">مدیریت</li>
 
                             <li class="nav-item">
-                                <a class="nav-link" href="index.html">
+                                <a class="nav-link" href="/">
                                     <i class="mdi mdi-view-dashboard-outline"></i>
                                     <span class="nav-label">میز کار</span>
                                 </a>

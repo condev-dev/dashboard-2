@@ -1,0 +1,22 @@
+{
+  "name": "سامانه پشتیبانی — مدیریت تیکت و مانیتورینگ",
+  "short_name": "سامانه پشتیبانی",
+  "lang": "fa-IR",
+  "dir": "rtl",
+  "start_url": "/",
+  "scope": "/",
+  "theme_color": "#0059FF",
+  "background_color": "#F4F6FB",
+  "icons": [
+    {
+      "src": "/assets/images/favicon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/assets/images/favicon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
